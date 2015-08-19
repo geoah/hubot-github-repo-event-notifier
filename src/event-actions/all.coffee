@@ -29,11 +29,10 @@ buildNewIssueOrPRMessage = (data, eventType, callback) ->
     callback "New #{eventType.replace('_', ' ')} \"#{pr_or_issue.title}\" by #{pr_or_issue.user.login}: #{pr_or_issue.html_url}#{mentioned_line}"
 
 buildNewPush = (data, callback) ->
-  push = data['push']
-  if push.commits.length > 0
-    commitWord = if push.commits.length > 1 then "commits" else "commit"
-    callback "Got #{push.commits.length} new #{commitWord} by #{push.commits[0].author.name}"
-    callback " * #{commit.message} #{commit.url}" for commit in push.commits
+  if data.commits.length > 0
+    commitWord = if data.commits.length > 1 then "commits" else "commit"
+    callback "Got #{data.commits.length} new #{commitWord} by #{data.commits[0].author.name}"
+    callback " * #{commit.message} #{commit.url}" for commit in data.commits
 
 module.exports =
   issues: (data, callback) ->
