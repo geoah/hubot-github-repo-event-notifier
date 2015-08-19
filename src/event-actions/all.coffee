@@ -28,6 +28,13 @@ buildNewIssueOrPRMessage = (data, eventType, callback) ->
       mentioned_line = extractMentionsFromBody(pr_or_issue.body)
     callback "New #{eventType.replace('_', ' ')} \"#{pr_or_issue.title}\" by #{pr_or_issue.user.login}: #{pr_or_issue.html_url}#{mentioned_line}"
 
+buildNewPush = (data, callback) ->
+  push = data['push']
+  if push.commits.length > 0
+    commitWord = if push.commits.length > 1 then "commits" else "commit"
+    callback "Got #{push.commits.length} new #{commitWord} by #{push.commits[0].author.name}"
+    callback " * #{commit.message} #{commit.url}" for commit in push.commits
+
 module.exports =
   issues: (data, callback) ->
     buildNewIssueOrPRMessage(data, 'issue', callback)
@@ -43,3 +50,5 @@ module.exports =
       if build.error.message?
         callback "Page build for #{data.repository.full_name} errored: #{build.error.message}."
 
+  push: (data, callback) ->
+    buildNewPush data, callback
